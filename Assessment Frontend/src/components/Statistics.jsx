@@ -2,45 +2,58 @@ import React, { useEffect, useState } from 'react';
 import Service from '../api/Service';
 
 const Statistics = ({ month }) => {
-    const [stats, setStats] = useState({ totalSales: 0, soldItems: 0, unsoldItems: 0 });
+    const [stats, setStats] = useState({
+        totalSales: 0,
+        soldItems: 0,
+        unsoldItems: 0,
+    });
 
+    // Fetch statistics when the month changes
     useEffect(() => {
         const fetchStatistics = async () => {
-            const data = await Service.getStatistics(month);
-            setStats(data);
+            try {
+                const data = await Service.getStatistics(month);
+                setStats(data);
+            } catch (error) {
+                console.error('Error fetching statistics:', error);
+            }
         };
 
-        fetchStatistics();  // Call fetchStatistics immediately when `month` changes
-    }, [month]);  // `month` is the dependency
+        fetchStatistics();
+    }, [month]);
 
     return (
         <div className="my-4">
-            <h3>Statistics</h3>
-            <div className="row">
-                <div className="col-md-4">
-                    <div className="card text-center">
-                        <div className="card-body">
-                            <h5 className="card-title">Total Sales</h5>
-                            <p className="card-text">${stats.totalSales}</p>
-                        </div>
-                    </div>
-                </div>
-                <div className="col-md-4">
-                    <div className="card text-center">
-                        <div className="card-body">
-                            <h5 className="card-title">Sold Items</h5>
-                            <p className="card-text">{stats.soldItems}</p>
-                        </div>
-                    </div>
-                </div>
-                <div className="col-md-4">
-                    <div className="card text-center">
-                        <div className="card-body">
-                            <h5 className="card-title">Unsold Items</h5>
-                            <p className="card-text">{stats.unsoldItems}</p>
-                        </div>
-                    </div>
-                </div>
+            <h3 className="text-center mb-4">Statistics</h3>
+
+            {/* Content container with background, left aligned, and reduced size */}
+            <div
+                className="table-container"
+                style={{
+                    backgroundColor: "#FFFF0F",
+                    padding: "10px 15px", 
+                    borderRadius: "10px",
+                    marginLeft: "0",
+                    width: "300px", 
+                    margin: "0", 
+                }}
+            >
+                <table className="table" style={{ width: "100%", borderCollapse: "collapse", margin: 0 }}>
+                    <tbody>
+                        <tr>
+                            <td style={{ fontWeight: "bold", padding: "5px" }}>Total Sales:</td>
+                            <td style={{ padding: "5px" }}>${stats.totalSales}</td>
+                        </tr>
+                        <tr>
+                            <td style={{ fontWeight: "bold", padding: "5px" }}>Sold Items:</td>
+                            <td style={{ padding: "5px" }}>{stats.soldItems}</td>
+                        </tr>
+                        <tr>
+                            <td style={{ fontWeight: "bold", padding: "5px" }}>Unsold Items:</td>
+                            <td style={{ padding: "5px" }}>{stats.unsoldItems}</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     );

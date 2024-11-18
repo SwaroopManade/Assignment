@@ -6,7 +6,6 @@ const PieChart = ({ month }) => {
     const [totalItems, setTotalItems] = useState(0);
     const [error, setError] = useState(null);
 
-    // Memoize the fetch function to avoid unnecessary re-creations
     const fetchPieChartData = useCallback(async () => {
         try {
             const data = await Service.getPieChart(month);
@@ -19,12 +18,12 @@ const PieChart = ({ month }) => {
 
             const processedData = Object.entries(data).map(([category, count]) => ({
                 category,
-                percentage: ((count / total) * 100).toFixed(2), // Convert to percentage
+                percentage: ((count / total) * 100).toFixed(2), 
             }));
 
             setTotalItems(total);
             setPieData(processedData);
-            setError(null); // Clear error if data is successfully fetched
+            setError(null); 
         } catch (error) {
             console.error("Error fetching pie chart data:", error);
             setError("Error fetching data. Please try again later.");
@@ -37,15 +36,16 @@ const PieChart = ({ month }) => {
 
     return (
         <div className="my-4">
-            <h3>Category Distribution Pie Chart</h3>
-            
+            <h3 className="text-center mb-4">Category Distribution Pie Chart</h3>
+
             {/* Error Handling */}
             {error && <p className="text-danger text-center">{error}</p>}
 
             {/* Pie Chart Visualization */}
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <div className="pie-chart-container" style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
                 {pieData.length > 0 ? (
                     <div
+                        className="pie-chart"
                         style={{
                             width: "200px",
                             height: "200px",
@@ -59,19 +59,25 @@ const PieChart = ({ month }) => {
                                     .join(", ")}
                             )`,
                             position: "relative",
+                            boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)",
+                            transition: "transform 0.3s ease-in-out",
                         }}
+                        onMouseEnter={(e) => e.target.style.transform = "scale(1.05)"}
+                        onMouseLeave={(e) => e.target.style.transform = "scale(1)"}
+                        aria-label={`Pie chart representing categories for month ${month}`}
                     ></div>
                 ) : (
-                    <p>No data available to display the pie chart.</p>
+                    <p className="text-center">No data available to display the pie chart.</p>
                 )}
             </div>
 
             {/* Legends */}
             {pieData.length > 0 && (
-                <div className="mt-4">
+                <div className="legend-container mt-4">
                     {pieData.map((data, index) => (
-                        <div key={data.category} style={{ display: "flex", alignItems: "center" }}>
+                        <div key={data.category} className="legend-item" style={{ display: "flex", alignItems: "center" }}>
                             <div
+                                className="legend-color-box"
                                 style={{
                                     width: "20px",
                                     height: "20px",
@@ -94,7 +100,7 @@ const PieChart = ({ month }) => {
 // Helper function to assign colors
 const getColor = (index) => {
     const colors = ["#FF5733", "#33FF57", "#5733FF", "#FFD700", "#FF33A6"];
-    return colors[index % colors.length]; // Cycle through colors
+    return colors[index % colors.length]; 
 };
 
 export default PieChart;

@@ -8,94 +8,94 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 import java.time.LocalDate;
+import java.time.OffsetDateTime;
 
 @Entity
 @Table(name = "product")
 public class Product {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+	 @Id
+	    @GeneratedValue(strategy = GenerationType.IDENTITY)
+	    private Long id;
+	    @Column(nullable=false)
+	    private String title;
+	    @Column(name  = "description", length = 2000 ,nullable = false)  // Increase the length here
+	    private String description;
+	    @Column(nullable=false)
+	    private String category;
+	    @Column(nullable=false)
+	    private Double price;
+	    @Column(nullable=false)
+	    private Boolean sold;
+	    @Column(nullable=false)
+	    private String image;
+	   
+	    @Column(name = "date_of_sale" , nullable = false)
+	    private OffsetDateTime dateOfSale;
+	   
+	    public String getTitle() {
+			return title;
+		}
 
-    private String category; // Category of the product
+		public void setTitle(String title) {
+			this.title = title;
+		}
 
-    @Column(name = "date_of_sale", nullable = false)
-    private LocalDate dateOfSale;
+		public String getDescription() {
+			return description;
+		}
 
-    private String description; // Product description
+		public void setDescription(String description) {
+			this.description = description;
+		}
 
-    private Double price; // Price of the product
+		public String getCategory() {
+			return category;
+		}
 
-    @Column(name = "sold", nullable = false)
-    private Boolean sold;
+		public void setCategory(String category) {
+			this.category = category;
+		}
 
-    private String title; // Title of the product
+		public Boolean getSold() {
+			return sold;
+		}
 
-    @Column(name = "product_image", nullable = false)
-    private String productImage; // Image of the product
+		public void setSold(Boolean sold) {
+			this.sold = sold;
+		}
 
-    // Getters and Setters
-    public Long getId() {
-        return id;
-    }
+		public String getImage() {
+			return image;
+		}
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+		public void setImage(String image) {
+			this.image = image;
+		}
 
-    public String getCategory() {
-        return category;
-    }
+		// Getters and setters
+	    public Long getId() {
+	        return id;
+	    }
 
-    public void setCategory(String category) {
-        this.category = category;
-    }
+	    public void setId(Long id) {
+	        this.id = id;
+	    }
 
-    public LocalDate getDateOfSale() {
-        return dateOfSale;
-    }
 
-    public void setDateOfSale(LocalDate dateOfSale) {
-        this.dateOfSale = dateOfSale;
-    }
+	    public Double getPrice() {
+	        return price;
+	    }
 
-    public String getDescription() {
-        return description;
-    }
+	    public void setPrice(Double price) {
+	        this.price = price;
+	    }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+	    public OffsetDateTime getDateOfSale() {
+	        return dateOfSale;
+	    }
 
-    public Double getPrice() {
-        return price;
-    }
-
-    public void setPrice(Double price) {
-        this.price = price;
-    }
-
-    public Boolean getSold() {
-        return sold;
-    }
-
-    public void setSold(Boolean sold) {
-        this.sold = sold;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getProductImage() {
-        return productImage;
-    }
-
-    public void setProductImage(String productImage) {
-        this.productImage = productImage;
-    }
+	    public void setDateOfSale(OffsetDateTime dateOfSale) {
+	        this.dateOfSale = dateOfSale;
+	    }
 }

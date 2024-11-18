@@ -5,20 +5,24 @@ import BarChart from './components/BarChart';
 import PieChart from './components/PieChart';
 
 const App = () => {
-    const [month, setMonth] = useState("3"); // Default to March
+    const [month, setMonth] = useState("3"); 
 
     return (
-        <div className="container">
-            <h1 className="text-center my-4">Transactions Dashboard</h1>
+        <div className="container-fluid" style={{ backgroundColor: "#f4f6f9", minHeight: "100vh", padding: "30px" }}>
+            {/* Header Section */}
+            <div className="text-center my-4">
+                <h1 style={{ fontSize: "2.5rem", fontWeight: "600", color: "#333" }}>Transactions Dashboard</h1>
+            </div>
 
             {/* Month Selector */}
-            <div className="mb-3">
-                <label htmlFor="monthSelect" className="form-label">Select Month:</label>
+            <div className="mb-4">
+                <label htmlFor="monthSelect" className="form-label" style={{ fontSize: "1.2rem", fontWeight: "500" }}>Select Month:</label>
                 <select
                     id="monthSelect"
                     className="form-select"
                     value={month}
                     onChange={(e) => setMonth(e.target.value)}
+                    style={{ fontSize: "1rem", padding: "0.75rem" }}
                 >
                     <option value="1">January</option>
                     <option value="2">February</option>
@@ -36,16 +40,27 @@ const App = () => {
             </div>
 
             {/* Statistics Section */}
-            <Statistics month={month} />
+            <div className="row mb-4">
+                <div className="col-12 col-md-4">
+                    <Statistics month={month} />
+                </div>
+            </div>
 
-            {/* Transactions Table Section */}
-            <TransactionsTable month={month} />
+            {/* Layout for Charts and Table */}
+            <div className="row">
+                <div className="col-12 col-md-6 mb-4">
+                    <TransactionsTable month={month} />
+                </div>
+                <div className="col-12 col-md-6 mb-4">
+                    <BarChart month={month} />
+                </div>
+            </div>
 
-            {/* Bar Chart Section */}
-            <BarChart month={month} />
-
-            {/* Pie Chart Section */}
-            <PieChart month={month} />
+            <div className="row">
+                <div className="col-12">
+                    <PieChart month={month} />
+                </div>
+            </div>
         </div>
     );
 };

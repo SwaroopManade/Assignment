@@ -1,21 +1,18 @@
 package edu.swaroop.assessment.service;
 
+import edu.swaroop.assessment.entity.Product;
+import edu.swaroop.assessment.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import edu.swaroop.assessment.entity.Product;
-import edu.swaroop.assessment.entity.ProductDTO;
-import edu.swaroop.assessment.repository.ProductRepository;
 import jakarta.transaction.Transactional;
 
 import java.io.IOException;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -25,8 +22,8 @@ public class ProductService {
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
 
-    private static final String URL = "https://s3.amazonaws.com/roxiler.com/product_transaction.json";
-    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssXXX");
+    @Value("https://s3.amazonaws.com/roxiler.com/product_transaction.json")
+    private String URL;
 
     @Autowired
     public ProductService(ProductRepository productRepository, RestTemplate restTemplate, ObjectMapper objectMapper) {
@@ -55,39 +52,13 @@ public class ProductService {
      */
     @Transactional
     public void initializeDatabase() {
-        ProductDTO[] productDTOs = restTemplate.getForObject(URL, ProductDTO[].class);
+        Product[] products = restTemplate.getForObject(URL, Product[].class);
 
-        if (productDTOs == null || productDTOs.length == 0) {
-            throw new RuntimeException("No products found from API.");
+        if (products != null) {
+            for (Product product : products) {
+                productRepository.save(product);
+            }
         }
-
-        List<Product> products = Arrays.stream(productDTOs)
-                .map(this::mapToProduct)
-                .toList();
-
-        productRepository.saveAll(products);
-    }
-
-    /**
-     * Mapping a ProductDTO to a Product entity.
-     */
-    private Product mapToProduct(ProductDTO dto) {
-        Product product = new Product();
-        product.setTitle(dto.getTitle());
-        product.setDescription(dto.getDescription());
-        product.setPrice(dto.getPrice());
-        product.setSold(dto.getSold());
-        product.setCategory(dto.getCategory());
-        product.setProductImage(dto.getImage());
-
-        // Parse dateOfSale with error handling
-        try {
-            product.setDateOfSale(LocalDate.parse(dto.getDateOfSale(), formatter));
-        } catch (Exception e) {
-            product.setDateOfSale(null);
-        }
-
-        return product;
     }
 
     /**
